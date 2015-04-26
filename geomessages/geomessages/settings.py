@@ -37,6 +37,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.gis',
     'messageboard',
 )
 
@@ -85,14 +86,13 @@ WSGI_APPLICATION = 'geomessages.wsgi.application'
 DATABASES = {
     'default': {
 
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
         'NAME': 'messages',
-        'USER': 'ari',
-        'PASSWORD': 'ari',
+        'USER': 'postgres',
+        'PASSWORD': 'postgres',
         'HOST': 'localhost',
     }
-}   
-
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
