@@ -1,2 +1,6 @@
 *.pyc
 venv
+__pycache__
+staticfiles
+local_settings.py
+

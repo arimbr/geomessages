@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
@@ -21,12 +22,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'w=n1k!q_8h67j2_dbpf$z#am5f1u*w3^nq!@e4g6la6i!uy#yl'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -85,6 +80,9 @@ WSGI_APPLICATION = 'geomessages.wsgi.application'
 #     }
 # }
 
+# Internationalization
+# https://docs.djangoproject.com/en/1.8/topics/i18n/
+
 DATABASES = {
     'default': {
 
@@ -95,9 +93,6 @@ DATABASES = {
         'HOST': 'localhost',
     }
 }
-
-# Internationalization
-# https://docs.djangoproject.com/en/1.8/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
 
@@ -114,3 +109,23 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+# Production settings
+
+import dj_database_url  # needs to be at the end
+
+DATABASES['default'] = dj_database_url.config()
+
+DEBUG = True
+
+ALLOWED_HOSTS = ['*']
+
+STATIC_ROOT = 'staticfiles'
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+try:
+    from .local_settings import *
+except ImportError:
+    pass
