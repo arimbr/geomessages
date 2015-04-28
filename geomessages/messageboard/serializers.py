@@ -9,4 +9,4 @@ class GeomessageSerializer(serializers.GeoModelSerializer):
         model = Geomessage
         geo_field = 'point'
 
-        fields = ('message', 'location')
+        fields = ('message', 'location', 'date')
