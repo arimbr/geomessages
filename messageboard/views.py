@@ -1,25 +1,29 @@
-from django.shortcuts import HttpResponse
 from django.contrib.gis.geos import Point
 from django.contrib.gis.measure import D
 
-from rest_framework.renderers import JSONRenderer
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 from .models import Geomessage
 from .serializers import GeomessageSerializer
 
 
-# Create your views here.
+@api_view(['GET'])
 def message_list(request):
-    # Get access to URL query parameters
-    # /api/v1/messages/?lat=66.434&lng=66.3453
-    lat = request.GET.get('lat') or 0
-    lng = request.GET.get('lng') or 0
-    origin = Point(float(lat), float(lng))
+    """
+    List all messages, or create a new message
+    GET /api/v1/messages/?lat=66.434&lng=66.3453
+    """
+    if request.method == 'GET':
+        # Get URL query parameters
+        lat = request.GET.get('lat') or 0
+        lng = request.GET.get('lng') or 0
+        origin = Point(float(lat), float(lng))
 
-    # Find geomessages that are within 50 km from the user location
-    qs = Geomessage.objects.filter(location__distance_lte=(origin, D(km=50)))
-    # TODO: qs stills need to be ordered by distance
-    serializer = GeomessageSerializer(qs, many=True)
-    json_content = JSONRenderer().render(serializer.data)
+        # Return messages within 50 km from user location ordered by distance
+        messages = Geomessage.objects.filter(
+            location__distance_lte=(origin, D(km=50)))
+        messages = messages.distance(origin).order_by('distance')
+        serializer = GeomessageSerializer(messages, many=True)
 
-    return HttpResponse(content=json_content)
+        return Response(serializer.data)
